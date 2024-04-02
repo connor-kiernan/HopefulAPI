@@ -3,8 +3,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_EWIfXTFmF
+          issuer-uri: <issuerUrl>
 
 hopeful-api:
-  user-pool-id: ${{secrets.userPoolId}}
-  frontend-url: ${{secrets.frontendUrl}}
+  user-pool-id: <userPoolId>
+  frontend-url: <frontendUrl>
