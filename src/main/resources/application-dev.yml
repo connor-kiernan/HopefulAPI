@@ -1,0 +1,11 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8001/cognito/auth
+
+hopeful-api:
+  user-pool-id: userPoolId
+  cognito-url: http://localhost:8001/cognito
+  frontend-url: http://localhost:3000
