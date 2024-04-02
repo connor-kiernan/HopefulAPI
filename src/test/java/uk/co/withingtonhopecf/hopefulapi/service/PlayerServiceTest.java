@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeTy
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersResponse;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
+import uk.co.withingtonhopecf.hopefulapi.config.HopefulApiConfigurationProperties;
 import uk.co.withingtonhopecf.hopefulapi.model.Player;
 import uk.co.withingtonhopecf.hopefulapi.model.enums.Position;
 
@@ -23,13 +24,16 @@ class PlayerServiceTest {
 	@Mock
 	private CognitoIdentityProviderClient cognitoIdentityProviderClient;
 
+	@Mock
+	private HopefulApiConfigurationProperties config;
+
 	@InjectMocks
 	private PlayerService playerService;
 
 	@Test
 	void listAllPlayersTest() {
 		final ListUsersRequest listUsersRequest = ListUsersRequest.builder()
-			.userPoolId("eu-west-1_EWIfXTFmF")
+			.userPoolId("id")
 			.build();
 
 		final ListUsersResponse listUsersResponse = ListUsersResponse.builder()
@@ -39,6 +43,7 @@ class PlayerServiceTest {
 			)
 			.build();
 
+		when(config.userPoolId()).thenReturn("id");
 		when(cognitoIdentityProviderClient.listUsers(listUsersRequest)).thenReturn(listUsersResponse);
 
 		List<Player> actualPlayers = playerService.listAllPlayers();
