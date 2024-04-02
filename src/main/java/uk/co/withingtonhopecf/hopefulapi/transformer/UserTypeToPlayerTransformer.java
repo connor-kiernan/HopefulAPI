@@ -18,9 +18,12 @@ public class UserTypeToPlayerTransformer {
 		Map<String, String> attributesByName = userType.attributes().stream()
 			.collect(Collectors.toMap(AttributeType::name, AttributeType::value));
 
-		return new Player(attributesByName.get("given_name"),
+		return new Player(
+			userType.username(),
+			attributesByName.get("given_name"),
 			attributesByName.get("family_name"),
-			Integer.parseInt(attributesByName.get("custom:kit_number")),
-			Position.valueOf(attributesByName.get("custom:position")));
+			attributesByName.containsKey("custom:kit_number") ? Integer.valueOf(attributesByName.get("custom:kit_number")) : null,
+			Position.valueOf(attributesByName.get("custom:position")),
+			attributesByName.get("picture"));
 	}
 }

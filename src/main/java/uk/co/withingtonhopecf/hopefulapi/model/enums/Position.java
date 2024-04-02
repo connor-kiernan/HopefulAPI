@@ -1,10 +1,7 @@
 package uk.co.withingtonhopecf.hopefulapi.model.enums;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.OBJECT;
-import static uk.co.withingtonhopecf.hopefulapi.model.enums.PositionGroup.ATTACKER;
-import static uk.co.withingtonhopecf.hopefulapi.model.enums.PositionGroup.DEFENDER;
-import static uk.co.withingtonhopecf.hopefulapi.model.enums.PositionGroup.GOALKEEPER;
-import static uk.co.withingtonhopecf.hopefulapi.model.enums.PositionGroup.MIDFIELDER;
+import static uk.co.withingtonhopecf.hopefulapi.model.enums.PositionGroup.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
@@ -13,6 +10,7 @@ import lombok.Getter;
 @JsonFormat(shape = OBJECT)
 public enum Position {
 
+	MANAGER("Manager", STAFF),
 	GK("Goalkeeper", GOALKEEPER),
 	RB("Right Back", DEFENDER),
 	CB("Centre Back", DEFENDER),

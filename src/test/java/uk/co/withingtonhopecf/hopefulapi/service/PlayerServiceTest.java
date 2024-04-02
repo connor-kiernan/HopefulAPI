@@ -44,8 +44,8 @@ class PlayerServiceTest {
 		List<Player> actualPlayers = playerService.listAllPlayers();
 
 		List<Player> expectedPlayers = List.of(
-			new Player("Connor", "Kiernan", 37, Position.LB),
-			new Player("Jo", "Doe", 17, Position.CF)
+			new Player("ConnorKiernan", "Connor", "Kiernan", 37, Position.LB),
+			new Player("JoDoe", "Jo", "Doe", 17, Position.CF)
 		);
 
 		assertEquals(expectedPlayers, actualPlayers, "Players did not match");
@@ -53,6 +53,7 @@ class PlayerServiceTest {
 
 	private UserType buildUserType(String givenName, String familyName, String kitNumber, String position) {
 		return UserType.builder()
+			.username(givenName + familyName)
 			.attributes(
 				AttributeType.builder()
 					.name("given_name")

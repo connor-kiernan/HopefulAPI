@@ -7,3 +7,4 @@ spring:
 
 hopeful-api:
   user-pool-id: ${{secrets.userPoolId}}
+  frontend-url: ${{secrets.frontendUrl}}

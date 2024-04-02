@@ -20,7 +20,7 @@
     </root>
   </springProfile>
 
-  <springProfile name="production">
+  <springProfile name="dev">
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
       <encoder>
         <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
