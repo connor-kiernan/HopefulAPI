@@ -5,18 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.co.withingtonhopecf.hopefulapi.model.Player;
-import uk.co.withingtonhopecf.hopefulapi.service.PlayerService;
+import uk.co.withingtonhopecf.hopefulapi.model.Match;
+import uk.co.withingtonhopecf.hopefulapi.service.MatchService;
 
 @RestController
+@RequestMapping("/matches")
 @RequiredArgsConstructor
-@RequestMapping("/players")
-public class PlayerController {
+public class MatchController {
 
-	private final PlayerService playerService;
+	private final MatchService matchService;
 
-	@GetMapping
-	public List<Player> listAllUsers() {
-		return playerService.listAllPlayers();
+	@GetMapping()
+	public List<Match> getFixtures() {
+		return matchService.getMatchesPublic();
 	}
 }

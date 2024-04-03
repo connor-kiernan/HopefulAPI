@@ -9,3 +9,4 @@ hopeful-api:
   user-pool-id: userPoolId
   cognito-url: http://localhost:8001/cognito
   frontend-url: http://localhost:3000
+  matches-table-name: "matchesTableName"

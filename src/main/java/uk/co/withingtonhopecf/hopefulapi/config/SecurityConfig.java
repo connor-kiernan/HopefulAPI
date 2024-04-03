@@ -29,6 +29,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
 				authorizationManagerRequestMatcherRegistry
 					.requestMatchers("/players").permitAll()
+					.requestMatchers("/matches").permitAll()
 					.anyRequest().authenticated()
 			).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
 			.build();
