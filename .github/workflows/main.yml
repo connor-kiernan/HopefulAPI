@@ -40,7 +40,7 @@ jobs:
         run: sed -i 's/<userPoolId>/${{ secrets.AWS_COGNITO_USER_POOL_ID }}/' src/main/resources/application-production.yml
 
       - name: Update frontend URL
-        run: sed -i 's#<frontendUrl>#${{ secrets.FRONTEND_URL }}#' src/main/resources/application-production.yml
+        run: sed -i 's#<frontendUrl>#"${{ secrets.FRONTEND_URL }}"#' src/main/resources/application-production.yml
 
       - name: Build with Maven
         run: mvn -B package -DskipTests -f pom.xml
