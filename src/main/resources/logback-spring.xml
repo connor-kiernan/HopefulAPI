@@ -1,35 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <property name="logfile.path" value="/var/log/"/>
-  <property name="service.name" value="HopefulApi"/>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %-4relative [%thread] %-5level %logger{35} - %msg %n
+      </pattern>
+    </encoder>
+  </appender>
 
-  <springProfile name="production">
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-      <file>${logfile.path}${service.name}.log</file>
-      <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-        <fileNamePattern>${logfile.path}${service.name}.log-%d{yyyyMMdd}.%i.gz</fileNamePattern>
-        <maxFileSize>1GB</maxFileSize>
-        <maxHistory>30</maxHistory>
-        <totalSizeCap>2GB</totalSizeCap>
-      </rollingPolicy>
-      <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-    </appender>
-
-    <root level="INFO">
-      <appender-ref ref="FILE"/>
-    </root>
-  </springProfile>
-
-  <springProfile name="dev">
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-      <encoder>
-        <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
-      </encoder>
-    </appender>
-
-    <root level="INFO">
-      <appender-ref ref="CONSOLE"/>
-    </root>
-  </springProfile>
-
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
 </configuration>
