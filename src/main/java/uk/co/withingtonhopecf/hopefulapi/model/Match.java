@@ -35,4 +35,10 @@ public class Match {
 	Boolean isHomeGame;
 	Boolean isHomeKit;
 
+	@Builder.Default
+	int homeGoals = -1;
+
+	@Builder.Default
+	int awayGoals = -1;
+
 }
