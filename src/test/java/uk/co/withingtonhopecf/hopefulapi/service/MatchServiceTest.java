@@ -33,7 +33,7 @@ class MatchServiceTest {
 
 	@Test
 	void getMatchesPublic() {
-		when(matchRepository.listWithAttributes(List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame")))
+		when(matchRepository.listWithAttributes(List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame","homeGoals", "awayGoals")))
 			.thenReturn(mockPageIterable);
 
 		Match match = Match.builder()
