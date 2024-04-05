@@ -3,11 +3,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8001/cognito/auth
+          issuer-uri: http://host.docker.internal:8001/cognito/auth
 
 hopeful-api:
   user-pool-id: userPoolId
-  cognito-url: http://localhost:8001/cognito
-  dynamo-db-url: http://localhost:8000
+  cognito-url: http://host.docker.internal:8001/cognito
+  dynamo-db-url: http://host.docker.internal:8000
   frontend-url: http://localhost:3000
   matches-table-name: "matches"
