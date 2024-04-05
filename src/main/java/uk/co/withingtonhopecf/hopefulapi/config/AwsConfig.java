@@ -29,6 +29,7 @@ public class AwsConfig {
 		return DynamoDbClient.builder()
 			.credentialsProvider(DefaultCredentialsProvider.create())
 			.region(Region.EU_WEST_1)
+			.endpointOverride(hapiConfig.dynamoDbUrl())
 			.build();
 	}
 

@@ -15,7 +15,7 @@ public class MatchController {
 
 	private final MatchService matchService;
 
-	@GetMapping()
+	@GetMapping
 	public List<Match> getFixtures() {
 		return matchService.getMatchesPublic();
 	}

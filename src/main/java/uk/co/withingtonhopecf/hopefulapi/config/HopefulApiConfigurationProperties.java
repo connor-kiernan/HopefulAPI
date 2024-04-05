@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 public record HopefulApiConfigurationProperties(
 	@NotBlank String userPoolId,
 	URI cognitoUrl,
+	URI dynamoDbUrl,
 	String frontendUrl,
 	@NotBlank String matchesTableName
 ) {}
