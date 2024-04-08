@@ -9,6 +9,8 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "hopeful-api")
 public record HopefulApiConfigurationProperties(
 	@NotBlank String userPoolId,
+	@NotBlank String clientId,
+	@NotBlank String tokenUrl,
 	URI cognitoUrl,
 	URI dynamoDbUrl,
 	String frontendUrl,
