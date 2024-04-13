@@ -17,7 +17,7 @@ class UserTypeToPlayerTransformerTest {
 	void transform() {
 		List<Player> players = transformer.transform(List.of(buildUserType("connor", "kiernan", "37", "LB")));
 
-		List<Player> expectedPlayers = List.of(new Player("connorkiernan", "connor", "kiernan", 37, Position.LB, "http://localhost/image.jpg"));
+		List<Player> expectedPlayers = List.of(new Player("1", "connorkiernan", "connor", "kiernan", 37, Position.LB, "http://localhost/image.jpg"));
 
 		assertEquals(expectedPlayers, players, "Players did not match");
 	}
@@ -26,6 +26,10 @@ class UserTypeToPlayerTransformerTest {
 		return UserType.builder()
 			.username(givenName + familyName)
 			.attributes(
+				AttributeType.builder()
+					.name("sub")
+					.value("1")
+					.build(),
 				AttributeType.builder()
 					.name("given_name")
 					.value(givenName)

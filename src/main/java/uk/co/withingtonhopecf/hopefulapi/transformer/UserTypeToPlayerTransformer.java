@@ -19,6 +19,7 @@ public class UserTypeToPlayerTransformer {
 			.collect(Collectors.toMap(AttributeType::name, AttributeType::value));
 
 		return new Player(
+			attributesByName.get("sub"),
 			userType.username(),
 			attributesByName.get("given_name"),
 			attributesByName.get("family_name"),
