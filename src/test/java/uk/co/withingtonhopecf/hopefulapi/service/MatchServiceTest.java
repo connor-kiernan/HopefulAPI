@@ -1,6 +1,8 @@
 package uk.co.withingtonhopecf.hopefulapi.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
@@ -17,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import uk.co.withingtonhopecf.hopefulapi.model.Availability;
+import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
 import uk.co.withingtonhopecf.hopefulapi.model.enums.AvailabilityStatus;
 import uk.co.withingtonhopecf.hopefulapi.model.enums.PitchType;
@@ -80,5 +83,13 @@ class MatchServiceTest {
 		List<Match> actualMatches = matchService.getMatchesForAvailability();
 
 		assertEquals(List.of(match), actualMatches);
+	}
+
+	@Test
+	void upsertAvailability() {
+		final Availability availability = new Availability(AvailabilityStatus.AVAILABLE, "comment");
+		matchService.upsertAvailability(new AvailabilityUpdateRequest("userSub", "matchId", availability));
+
+		verify(matchRepository, times(1)).upsertAvailability("matchId", "userSub", availability );
 	}
 }

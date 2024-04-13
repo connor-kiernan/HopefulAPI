@@ -3,6 +3,7 @@ package uk.co.withingtonhopecf.hopefulapi.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
 import uk.co.withingtonhopecf.hopefulapi.repository.MatchRepository;
 
@@ -21,6 +22,10 @@ public class MatchService {
 
 	public List<Match> getMatchesForAvailability() {
 		return getMatchesWithList(AVAILABILITY_ATTRIBUTES);
+	}
+
+	public void upsertAvailability(AvailabilityUpdateRequest request) {
+		matchRepository.upsertAvailability(request.matchId(), request.userSub(), request.availability());
 	}
 
 	private List<Match> getMatchesWithList(List<String> availabilityAttributes) {

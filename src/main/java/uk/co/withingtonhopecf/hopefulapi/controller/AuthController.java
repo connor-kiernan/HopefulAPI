@@ -2,6 +2,9 @@ package uk.co.withingtonhopecf.hopefulapi.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -25,25 +28,21 @@ public class AuthController {
 
 	@PostMapping("/code")
 	public AuthResponse authenticate(@RequestBody AuthCodeRequest authCodeRequest, HttpServletResponse response) {
-		log.info("Received auth code request: {}", authCodeRequest);
 		final Tokens tokens = authService.getTokensFromAuthCode(authCodeRequest);
 
-		log.info("Got tokens: {}", tokens);
 		final Cookie cookie = new Cookie("refresh", tokens.refreshToken());
 		cookie.setSecure(true);
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 
-		return new AuthResponse(tokens.accessToken());
+		return createAuthResponse(tokens.accessToken());
 	}
 
 	@GetMapping("/refresh")
 	public AuthResponse refresh(@CookieValue("refresh") String refreshToken) {
-		log.info("REFRESH TOKEN: {}",  refreshToken);
 		String accessTokenFromRefreshToken = authService.getAccessTokenFromRefreshToken(refreshToken);
-		log.info("RESPONSE: {}", accessTokenFromRefreshToken);
 
-		return new AuthResponse(accessTokenFromRefreshToken);
+		return createAuthResponse(accessTokenFromRefreshToken);
 	}
 
 	@PostMapping("logout")
@@ -54,5 +53,18 @@ public class AuthController {
 		cookie.setMaxAge(0);
 
 		response.addCookie(cookie);
+	}
+
+	private static AuthResponse createAuthResponse(String accessToken) {
+		Base64.Decoder decoder = Base64.getUrlDecoder();
+		String payload = new String(decoder.decode(accessToken.split("\\.")[1]));
+
+		Pattern pattern = Pattern.compile("\"sub\":\"([^\"]+)\"");
+		Matcher matcher = pattern.matcher(payload);
+		if (matcher.find()) {
+			return new AuthResponse(accessToken, matcher.group(1));
+		}
+
+		throw new IllegalArgumentException();
 	}
 }

@@ -35,8 +35,8 @@ public class AuthService {
 
 	public String getAccessTokenFromRefreshToken(String refreshToken) {
 		final String uri = "%s/oauth2/token".formatted(config.tokenUrl());
-		final String body = "grant_type=refresh_token&client_id=56aos06b5upnvkhho12k6lcfa6&refresh_token=%s"
-			.formatted(refreshToken);
+		final String body = "grant_type=refresh_token&client_id=%s&refresh_token=%s"
+			.formatted(config.clientId(), refreshToken);
 
 		final Tokens response = restClient.post()
 			.uri(uri)
