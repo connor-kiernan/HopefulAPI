@@ -19,7 +19,7 @@ public class PlayerService {
 
 	private final UserTypeToPlayerTransformer userTypeToPlayerTransformer = new UserTypeToPlayerTransformer();
 
-public List<Player> listAllPlayers() {
+	public List<Player> listAllPlayers() {
 		ListUsersRequest request = ListUsersRequest.builder()
 			.userPoolId(config.userPoolId())
 			.build();
