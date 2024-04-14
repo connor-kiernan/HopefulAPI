@@ -7,5 +7,7 @@ spring:
 
 hopeful-api:
   user-pool-id: <userPoolId>
+  client-id: <clientId>
+  token-url: <tokenUrl>
   frontend-url: <frontendUrl>
   matches-table-name: <matchesTableName>

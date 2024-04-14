@@ -7,6 +7,8 @@ spring:
 
 hopeful-api:
   user-pool-id: userPoolId
+  client-id: clientId
+  token-url: http://host.docker.internal:8001/cognito
   cognito-url: http://host.docker.internal:8001/cognito
   dynamo-db-url: http://host.docker.internal:8000
   frontend-url: http://localhost:3000
