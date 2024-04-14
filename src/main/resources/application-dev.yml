@@ -11,5 +11,5 @@ hopeful-api:
   token-url: http://localhost:8001/cognito
   cognito-url: http://localhost:8001/cognito
   dynamo-db-url: http://localhost:8000
-  frontend-url: http://localhost:3000
+  frontend-urls: [http://localhost:3000]
   matches-table-name: "matches"

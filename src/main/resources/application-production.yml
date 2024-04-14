@@ -9,5 +9,5 @@ hopeful-api:
   user-pool-id: <userPoolId>
   client-id: <clientId>
   token-url: <tokenUrl>
-  frontend-url: <frontendUrl>
+  frontend-urls: [<frontendUrl>, <hubUrl>]
   matches-table-name: <matchesTableName>
