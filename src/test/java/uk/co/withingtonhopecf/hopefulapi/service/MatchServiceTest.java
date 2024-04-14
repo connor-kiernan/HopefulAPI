@@ -60,7 +60,7 @@ class MatchServiceTest {
 
 	@Test
 	void getMatchesForAvailabilityTest() {
-		when(matchRepository.listWithAttributes(List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame","isHomeKit", "pitchType", "playerAvailability")))
+		when(matchRepository.listWithAttributes(List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame","isHomeKit", "pitchType", "eventType", "playerAvailability")))
 			.thenReturn(mockPageIterable);
 
 		Match match = Match.builder()
