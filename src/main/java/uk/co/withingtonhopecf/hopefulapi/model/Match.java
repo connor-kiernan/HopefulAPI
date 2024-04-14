@@ -43,6 +43,6 @@ public class Match {
 
 	Map<String, Integer> withyGoalScorers;
 
-	String matchType;
+	String eventType;
 
 }
