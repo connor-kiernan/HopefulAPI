@@ -3,8 +3,8 @@ name: Hopeful API Deploy
 on:
   push:
     branches:
-    - main
-    
+      - main
+
 env:
   AWS_REGION: eu-west-1
 
@@ -18,7 +18,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-          
+
       - name: Run Maven Test
         run: mvn clean test
 
@@ -32,7 +32,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-          
+
       - name: Update issuerUrl
         run: sed -i 's#<issuerUrl>#${{ secrets.AWS_COGNITO_ISSUER_URL }}#' src/main/resources/application-production.yml
 
@@ -45,9 +45,15 @@ jobs:
       - name: Update Matches table name
         run: sed -i 's#<matchesTableName>#"${{ secrets.MATCHES_TABLE_NAME }}"#' src/main/resources/application-production.yml
 
+      - name: Update Client ID
+        run: sed -i 's#<clientId>#"${{ secrets.AWS_COGNITO_CLIENT_ID }}"#' src/main/resources/application-production.yml
+
+      - name: Update Token URL
+        run: sed -i 's#<tokenUrl>#"${{ secrets.AWS_COGNITO_TOKEN_URL }}"#' src/main/resources/application-production.yml
+
       - name: Build with Maven
         run: mvn -B package -DskipTests -f pom.xml
-      
+
       - name: Upload Maven Artifact
         uses: actions/upload-artifact@v3
         with:
