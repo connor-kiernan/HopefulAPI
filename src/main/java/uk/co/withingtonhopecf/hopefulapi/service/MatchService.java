@@ -17,7 +17,9 @@ public class MatchService {
 	private static final List<String> AVAILABILITY_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "isHomeKit", "pitchType", "playerAvailability");
 
 	public List<Match> getMatchesPublic() {
-		return getMatchesWithList(PUBLIC_ATTRIBUTES);
+		return matchRepository.publicListWithAttributes(PUBLIC_ATTRIBUTES).stream()
+			.flatMap(page -> page.items().stream())
+			.toList();
 	}
 
 	public List<Match> getMatchesForAvailability() {

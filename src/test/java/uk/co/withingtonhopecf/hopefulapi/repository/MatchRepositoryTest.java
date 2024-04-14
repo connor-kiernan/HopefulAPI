@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
+import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
 import uk.co.withingtonhopecf.hopefulapi.config.HopefulApiConfigurationProperties;
@@ -52,6 +53,20 @@ class MatchRepositoryTest {
 			.build();
 
 		matchRepository.listWithAttributes(attributes);
+
+		verify(mockDynamoDbTable, times(1)).scan(request);
+	}
+
+	@Test
+	void publicListWithAttributes() {
+		final List<String> attributes = List.of("id");
+
+		ScanEnhancedRequest request = ScanEnhancedRequest.builder()
+			.attributesToProject(attributes)
+			.filterExpression(Expression.builder().expression("attribute_not_exists (eventType) OR eventType = GAME").build())
+			.build();
+
+		matchRepository.publicListWithAttributes(attributes);
 
 		verify(mockDynamoDbTable, times(1)).scan(request);
 	}
