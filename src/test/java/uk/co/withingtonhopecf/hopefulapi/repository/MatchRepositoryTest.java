@@ -3,6 +3,7 @@ package uk.co.withingtonhopecf.hopefulapi.repository;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static software.amazon.awssdk.enhanced.dynamodb.internal.AttributeValues.stringValue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,10 @@ class MatchRepositoryTest {
 
 		ScanEnhancedRequest request = ScanEnhancedRequest.builder()
 			.attributesToProject(attributes)
-			.filterExpression(Expression.builder().expression("attribute_not_exists (eventType) OR eventType = GAME").build())
+			.filterExpression(Expression.builder()
+				.expression("attribute_not_exists (eventType) OR eventType = :eventType")
+				.putExpressionValue(":eventType", stringValue("GAME"))
+				.build())
 			.build();
 
 		matchRepository.publicListWithAttributes(attributes);
