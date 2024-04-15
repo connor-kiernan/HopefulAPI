@@ -1,5 +1,7 @@
 package uk.co.withingtonhopecf.hopefulapi.repository;
 
+import static software.amazon.awssdk.enhanced.dynamodb.internal.AttributeValues.stringValue;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -25,7 +27,10 @@ public class MatchRepository {
 	public PageIterable<Match> publicListWithAttributes(List<String> attributes) {
 		ScanEnhancedRequest request = ScanEnhancedRequest.builder()
 			.attributesToProject(attributes)
-			.filterExpression(Expression.builder().expression("attribute_not_exists (eventType) OR eventType = GAME").build())
+			.filterExpression(Expression.builder()
+				.expression("attribute_not_exists (eventType) OR eventType = :eventType")
+				.putExpressionValue(":eventType", stringValue("GAME"))
+				.build())
 			.build();
 
 		return getTable().scan(request);
