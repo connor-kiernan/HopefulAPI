@@ -94,4 +94,13 @@ class MatchRepositoryTest {
 			)
 			.build());
 	}
+
+	@Test
+	void addEvent() {
+		Match match = Match.builder().id("id").build();
+
+		matchRepository.addEvent(match);
+
+		verify(mockDynamoDbTable, times(1)).putItem(match);
+	}
 }

@@ -62,4 +62,7 @@ public class MatchRepository {
 		return dynamoDbEnhancedClient.table(config.matchesTableName(), TableSchema.fromImmutableClass(Match.class));
 	}
 
+	public void addEvent(Match match) {
+		getTable().putItem(match);
+	}
 }
