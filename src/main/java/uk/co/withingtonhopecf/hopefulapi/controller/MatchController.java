@@ -1,5 +1,6 @@
 package uk.co.withingtonhopecf.hopefulapi.controller;
 
+import jakarta.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class MatchController {
 	}
 
 	@PostMapping("/addEvent")
-	public void addEvent(@RequestBody AddEventRequest addEventRequest, Principal principal) {
+	public void addEvent(@Valid @RequestBody AddEventRequest addEventRequest, Principal principal) {
 		log.info("User: {}, adding event: {}", principal.getName(), addEventRequest);
 		matchService.addEvent(addEventRequest);
 	}
