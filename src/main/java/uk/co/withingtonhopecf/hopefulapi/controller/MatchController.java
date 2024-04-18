@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.co.withingtonhopecf.hopefulapi.exception.WrongUserException;
 import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
-import uk.co.withingtonhopecf.hopefulapi.model.auth.AddEventRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.service.MatchService;
 
 @Slf4j

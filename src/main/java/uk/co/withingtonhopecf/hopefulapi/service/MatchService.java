@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
-import uk.co.withingtonhopecf.hopefulapi.model.auth.AddEventRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.repository.MatchRepository;
 
 @Service
