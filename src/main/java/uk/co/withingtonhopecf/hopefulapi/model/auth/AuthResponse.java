@@ -5,5 +5,5 @@ import java.util.List;
 public record AuthResponse(
 	String accessToken,
 	String userSub,
-	List<String> roles
+	List<String> userRoles
 ) {}
