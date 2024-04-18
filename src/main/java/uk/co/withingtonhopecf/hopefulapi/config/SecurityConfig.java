@@ -84,7 +84,7 @@ public class SecurityConfig {
 					.requestMatchers("/auth/*").permitAll()
 					.requestMatchers("/players").permitAll()
 					.requestMatchers("/matches").permitAll()
-					.requestMatchers("/addEvent").hasAuthority("admin")
+					.requestMatchers("/addEvent").hasAuthority("Admin")
 					.anyRequest().authenticated()
 			).httpBasic(Customizer.withDefaults())
 			.sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -97,7 +97,7 @@ public class SecurityConfig {
 	public InMemoryUserDetailsManager userDetailsManager() {
 		UserDetails user = User.withUsername("19")
 			.password("{noop}password")
-			.authorities(new SimpleGrantedAuthority("admin"))
+			.authorities(new SimpleGrantedAuthority("Admin"))
 			.build();
 
 		return new InMemoryUserDetailsManager(user);
