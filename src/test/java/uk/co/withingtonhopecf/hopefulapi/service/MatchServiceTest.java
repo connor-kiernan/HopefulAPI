@@ -1,9 +1,13 @@
 package uk.co.withingtonhopecf.hopefulapi.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.util.Collections.emptyMap;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.co.withingtonhopecf.hopefulapi.model.enums.PitchType.GRASS;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -13,16 +17,19 @@ import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import uk.co.withingtonhopecf.hopefulapi.model.Availability;
 import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
+import uk.co.withingtonhopecf.hopefulapi.model.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.enums.AvailabilityStatus;
-import uk.co.withingtonhopecf.hopefulapi.model.enums.PitchType;
 import uk.co.withingtonhopecf.hopefulapi.repository.MatchRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +46,9 @@ class MatchServiceTest {
 
 	@Test
 	void getMatchesPublic() {
-		when(matchRepository.publicListWithAttributes(List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame","homeGoals", "awayGoals", "withyGoalScorers")))
+		when(matchRepository.publicListWithAttributes(
+			List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "homeGoals", "awayGoals",
+				"withyGoalScorers")))
 			.thenReturn(mockPageIterable);
 
 		Match match = Match.builder()
@@ -60,7 +69,9 @@ class MatchServiceTest {
 
 	@Test
 	void getMatchesForAvailabilityTest() {
-		when(matchRepository.listWithAttributes(List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame","isHomeKit", "pitchType", "eventType", "playerAvailability")))
+		when(matchRepository.listWithAttributes(
+			List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "isHomeKit", "pitchType",
+				"eventType", "playerAvailability")))
 			.thenReturn(mockPageIterable);
 
 		Match match = Match.builder()
@@ -71,7 +82,7 @@ class MatchServiceTest {
 			.played(false)
 			.isHomeGame(true)
 			.isHomeKit(true)
-			.pitchType(PitchType.GRASS)
+			.pitchType(GRASS)
 			.playerAvailability(Map.of("connor.kiernan", Availability.builder()
 				.status(AvailabilityStatus.AVAILABLE)
 				.comment("Comment")
@@ -90,6 +101,87 @@ class MatchServiceTest {
 		final Availability availability = new Availability(AvailabilityStatus.AVAILABLE, "comment");
 		matchService.upsertAvailability(new AvailabilityUpdateRequest("userSub", "matchId", availability));
 
-		verify(matchRepository, times(1)).upsertAvailability("matchId", "userSub", availability );
+		verify(matchRepository, times(1)).upsertAvailability("matchId", "userSub", availability);
+	}
+
+	@ParameterizedTest
+	@CsvSource({"GAME, gme", "TRAINING, trn", "Social, evn"})
+	void addEventTest(String eventType, String idPrefix) {
+		final AddEventRequest addEventRequest = new AddEventRequest(
+			"Opponent Name",
+			"2024-06-14T10:15",
+			GRASS,
+			"123 Fake Street",
+			"Fake Area",
+			"A12 3BC",
+			true,
+			true,
+			eventType
+		);
+
+		Instant instant = Instant.ofEpochSecond(123456789L);
+		MockedStatic<Instant> mockStaticInstant = mockStatic(Instant.class, CALLS_REAL_METHODS);
+		try (mockStaticInstant) {
+			mockStaticInstant.when(Instant::now).thenReturn(instant);
+
+			matchService.addEvent(addEventRequest);
+		}
+
+		Match expectedMatch = Match.builder()
+			.id(idPrefix + "123456789")
+			.kickOffDateTime(ZonedDateTime.ofInstant(Instant.ofEpochSecond(1718356500), ZoneId.of("Europe/London")))
+			.pitchType(GRASS)
+			.opponent("Opponent Name")
+			.address(Map.of(
+				"line1", "123 Fake Street",
+				"line2", "Fake Area",
+				"postcode", "A12 3BC"
+			))
+			.isHomeGame(true)
+			.isHomeKit(true)
+			.eventType(eventType)
+			.playerAvailability(emptyMap())
+			.build();
+
+		verify(matchRepository, times(1)).addEvent(expectedMatch);
+	}
+
+	@Test
+	void addEventTestNoLine2() {
+		final AddEventRequest addEventRequest = AddEventRequest.builder()
+			.opponent("Opponent Name")
+			.kickOffDateTime("2024-06-14T10:15")
+			.pitchType(GRASS)
+			.address1("123 Fake Street")
+			.postcode("A12 3BC")
+			.isHomeGame(true)
+			.isHomeKit(true)
+			.eventType("GAME")
+			.build();
+
+		Instant instant = Instant.ofEpochSecond(123456789L);
+		MockedStatic<Instant> mockStaticInstant = mockStatic(Instant.class, CALLS_REAL_METHODS);
+		try (mockStaticInstant) {
+			mockStaticInstant.when(Instant::now).thenReturn(instant);
+
+			matchService.addEvent(addEventRequest);
+		}
+
+		Match expectedMatch = Match.builder()
+			.id("gme123456789")
+			.kickOffDateTime(ZonedDateTime.ofInstant(Instant.ofEpochSecond(1718356500), ZoneId.of("Europe/London")))
+			.pitchType(GRASS)
+			.opponent("Opponent Name")
+			.address(Map.of(
+				"line1", "123 Fake Street",
+				"postcode", "A12 3BC"
+			))
+			.isHomeGame(true)
+			.isHomeKit(true)
+			.eventType("GAME")
+			.playerAvailability(emptyMap())
+			.build();
+
+		verify(matchRepository, times(1)).addEvent(expectedMatch);
 	}
 }

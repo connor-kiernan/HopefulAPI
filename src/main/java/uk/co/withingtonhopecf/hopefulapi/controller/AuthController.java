@@ -1,10 +1,9 @@
 package uk.co.withingtonhopecf.hopefulapi.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Base64;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.co.withingtonhopecf.hopefulapi.model.auth.AccessTokenPayload;
 import uk.co.withingtonhopecf.hopefulapi.model.auth.AuthCodeRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.auth.AuthResponse;
 import uk.co.withingtonhopecf.hopefulapi.model.auth.Tokens;
@@ -25,6 +25,8 @@ import uk.co.withingtonhopecf.hopefulapi.service.AuthService;
 public class AuthController {
 
 	private final AuthService authService;
+
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	@PostMapping("/code")
 	public AuthResponse authenticate(@RequestBody AuthCodeRequest authCodeRequest, HttpServletResponse response) {
@@ -59,12 +61,12 @@ public class AuthController {
 		Base64.Decoder decoder = Base64.getUrlDecoder();
 		String payload = new String(decoder.decode(accessToken.split("\\.")[1]));
 
-		Pattern pattern = Pattern.compile("\"sub\":\"([^\"]+)\"");
-		Matcher matcher = pattern.matcher(payload);
-		if (matcher.find()) {
-			return new AuthResponse(accessToken, matcher.group(1));
-		}
+		try {
+			AccessTokenPayload accessTokenPayload = objectMapper.readValue(payload, AccessTokenPayload.class);
 
-		throw new IllegalArgumentException();
+			return new AuthResponse(accessToken, accessTokenPayload.sub(), accessTokenPayload.groups());
+		} catch (Exception e) {
+			throw new IllegalArgumentException();
+		}
 	}
 }

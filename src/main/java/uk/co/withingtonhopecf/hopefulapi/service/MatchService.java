@@ -1,11 +1,21 @@
 package uk.co.withingtonhopecf.hopefulapi.service;
 
+import static java.util.Collections.emptyMap;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
+import uk.co.withingtonhopecf.hopefulapi.model.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.repository.MatchRepository;
 
 @Service
@@ -35,4 +45,39 @@ public class MatchService {
 			.toList();
 	}
 
+	public void addEvent(AddEventRequest addEventRequest) {
+		String idPrefix = switch (addEventRequest.eventType()) {
+			case "GAME" -> "gme";
+			case "TRAINING" -> "trn";
+			default -> "evn";
+		};
+
+		Map<String, String> address = new HashMap<>();
+		address.put("line1", addEventRequest.address1());
+		address.put("postcode", addEventRequest.postcode());
+
+		if (addEventRequest.address2() !=  null) {
+			address.put("line2", addEventRequest.address2());
+		}
+
+		Match match = Match.builder()
+			.id(idPrefix + Instant.now().getEpochSecond())
+			.opponent(addEventRequest.opponent())
+			.address(address)
+			.kickOffDateTime(resolveKickOffTime(addEventRequest.kickOffDateTime()))
+			.pitchType(addEventRequest.pitchType())
+			.isHomeGame(addEventRequest.isHomeGame())
+			.isHomeKit(addEventRequest.isHomeKit())
+			.playerAvailability(emptyMap())
+			.eventType(addEventRequest.eventType())
+			.build();
+
+		matchRepository.addEvent(match);
+	}
+
+	private static ZonedDateTime resolveKickOffTime(String kickOffTime) {
+		LocalDateTime localDateTime = LocalDateTime.parse(kickOffTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+
+		return ZonedDateTime.of(localDateTime, ZoneId.of("Europe/London"));
+	}
 }
