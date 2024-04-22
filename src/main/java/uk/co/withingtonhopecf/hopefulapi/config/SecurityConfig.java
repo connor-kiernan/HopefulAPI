@@ -85,6 +85,7 @@ public class SecurityConfig {
 					.requestMatchers("/players").permitAll()
 					.requestMatchers("/matches").permitAll()
 					.requestMatchers("/addEvent").hasAuthority("Admin")
+					.requestMatchers("/editEvent").hasAuthority("Admin")
 					.anyRequest().authenticated()
 			).httpBasic(Customizer.withDefaults())
 			.sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
