@@ -65,4 +65,8 @@ public class MatchRepository {
 	public void addEvent(Match match) {
 		getTable().putItem(match);
 	}
+
+	public void updateEvent(Match match) {
+		getTable().updateItem(match);
+	}
 }

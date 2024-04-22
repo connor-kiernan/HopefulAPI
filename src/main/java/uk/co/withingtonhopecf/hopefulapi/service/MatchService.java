@@ -45,6 +45,10 @@ public class MatchService {
 			.toList();
 	}
 
+	public void editEvent(Match match) {
+		matchRepository.updateEvent(match);
+	}
+
 	public void addEvent(AddEventRequest addEventRequest) {
 		String idPrefix = switch (addEventRequest.eventType()) {
 			case "GAME" -> "gme";

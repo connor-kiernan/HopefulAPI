@@ -47,4 +47,11 @@ public class MatchController {
 		log.info("User: {}, adding event: {}", principal.getName(), addEventRequest);
 		matchService.addEvent(addEventRequest);
 	}
+
+	@PatchMapping("/editEvent")
+	public void editEvent(@Valid @RequestBody Match match, Principal principal) {
+		log.info("User: {}, editing event: {}", principal.getName(), match);
+
+		matchService.editEvent(match);
+	}
 }

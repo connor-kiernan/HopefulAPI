@@ -2,6 +2,7 @@ package uk.co.withingtonhopecf.hopefulapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import jakarta.validation.constraints.NotBlank;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import lombok.Builder;
@@ -21,6 +22,7 @@ import uk.co.withingtonhopecf.hopefulapi.model.enums.PitchType;
 public class Match {
 
 	@Getter(onMethod_ = @DynamoDbPartitionKey)
+	@NotBlank
 	String id;
 
 	@Getter(onMethod_ = @DynamoDbConvertedBy(ZonedDateTimeConverter.class))
