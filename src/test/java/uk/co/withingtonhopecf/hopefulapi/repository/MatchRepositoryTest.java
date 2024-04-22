@@ -103,4 +103,13 @@ class MatchRepositoryTest {
 
 		verify(mockDynamoDbTable, times(1)).putItem(match);
 	}
+
+	@Test
+	void updateEvent() {
+		Match match = Match.builder().id("id").build();
+
+		matchRepository.updateEvent(match);
+
+		verify(mockDynamoDbTable, times(1)).updateItem(match);
+	}
 }

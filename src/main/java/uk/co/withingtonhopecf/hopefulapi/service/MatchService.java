@@ -13,10 +13,10 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
-import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
-import uk.co.withingtonhopecf.hopefulapi.model.EditEventRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.request.AvailabilityUpdateRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.request.EditEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
-import uk.co.withingtonhopecf.hopefulapi.model.AddEventRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.request.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.repository.MatchRepository;
 
 @Service
@@ -86,7 +86,6 @@ public class MatchService {
 
 		matchRepository.addEvent(match);
 	}
-
 
 	private static Map<String, String> createAddress(String line1, String postcode, String line2) {
 		Map<String, String> address = new HashMap<>();

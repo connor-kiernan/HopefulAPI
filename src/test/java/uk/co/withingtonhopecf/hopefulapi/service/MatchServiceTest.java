@@ -26,10 +26,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import uk.co.withingtonhopecf.hopefulapi.model.Availability;
-import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.request.AvailabilityUpdateRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
-import uk.co.withingtonhopecf.hopefulapi.model.AddEventRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.request.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.enums.AvailabilityStatus;
+import uk.co.withingtonhopecf.hopefulapi.model.request.EditEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.repository.MatchRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -183,5 +184,38 @@ class MatchServiceTest {
 			.build();
 
 		verify(matchRepository, times(1)).addEvent(expectedMatch);
+	}
+
+	@Test
+	void editEventTest() {
+		final EditEventRequest editEventRequest = EditEventRequest.builder()
+			.id("gme1")
+			.opponent("Opponent Name")
+			.kickOffDateTime("2024-06-14T10:15")
+			.pitchType(GRASS)
+			.address1("123 Fake Street")
+			.postcode("A12 3BC")
+			.isHomeGame(true)
+			.isHomeKit(true)
+			.eventType("GAME")
+			.build();
+
+		matchService.editEvent(editEventRequest);
+
+		Match expectedMatch = Match.builder()
+			.id("gme1")
+			.kickOffDateTime(ZonedDateTime.ofInstant(Instant.ofEpochSecond(1718356500), ZoneId.of("Europe/London")))
+			.pitchType(GRASS)
+			.opponent("Opponent Name")
+			.address(Map.of(
+				"line1", "123 Fake Street",
+				"postcode", "A12 3BC"
+			))
+			.isHomeGame(true)
+			.isHomeKit(true)
+			.eventType("GAME")
+			.build();
+
+		verify(matchRepository, times(1)).updateEvent(expectedMatch);
 	}
 }

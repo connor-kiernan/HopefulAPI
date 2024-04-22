@@ -1,4 +1,4 @@
-package uk.co.withingtonhopecf.hopefulapi.model;
+package uk.co.withingtonhopecf.hopefulapi.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
