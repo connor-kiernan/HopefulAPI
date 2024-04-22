@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.co.withingtonhopecf.hopefulapi.exception.WrongUserException;
 import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.EditEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
 import uk.co.withingtonhopecf.hopefulapi.model.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.service.MatchService;
@@ -49,9 +50,9 @@ public class MatchController {
 	}
 
 	@PatchMapping("/editEvent")
-	public void editEvent(@Valid @RequestBody Match match, Principal principal) {
-		log.info("User: {}, editing event: {}", principal.getName(), match);
+	public void editEvent(@Valid @RequestBody EditEventRequest editEventRequest, Principal principal) {
+		log.info("User: {}, editing event: {}", principal.getName(), editEventRequest);
 
-		matchService.editEvent(match);
+		matchService.editEvent(editEventRequest);
 	}
 }

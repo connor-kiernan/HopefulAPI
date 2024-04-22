@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import uk.co.withingtonhopecf.hopefulapi.model.AvailabilityUpdateRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.EditEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
 import uk.co.withingtonhopecf.hopefulapi.model.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.repository.MatchRepository;
@@ -45,7 +46,20 @@ public class MatchService {
 			.toList();
 	}
 
-	public void editEvent(Match match) {
+	public void editEvent(EditEventRequest editEventRequest) {
+		Map<String, String> address = createAddress(editEventRequest.address1(), editEventRequest.postcode(), editEventRequest.address2());
+
+		Match match = Match.builder()
+			.id(editEventRequest.id())
+			.opponent(editEventRequest.opponent())
+			.address(address)
+			.kickOffDateTime(resolveKickOffTime(editEventRequest.kickOffDateTime()))
+			.pitchType(editEventRequest.pitchType())
+			.isHomeGame(editEventRequest.isHomeGame())
+			.isHomeKit(editEventRequest.isHomeKit())
+			.eventType(editEventRequest.eventType())
+			.build();
+
 		matchRepository.updateEvent(match);
 	}
 
@@ -56,13 +70,7 @@ public class MatchService {
 			default -> "evn";
 		};
 
-		Map<String, String> address = new HashMap<>();
-		address.put("line1", addEventRequest.address1());
-		address.put("postcode", addEventRequest.postcode());
-
-		if (addEventRequest.address2() !=  null) {
-			address.put("line2", addEventRequest.address2());
-		}
+		Map<String, String> address = createAddress(addEventRequest.address1(), addEventRequest.postcode(), addEventRequest.address2());
 
 		Match match = Match.builder()
 			.id(idPrefix + Instant.now().getEpochSecond())
@@ -77,6 +85,19 @@ public class MatchService {
 			.build();
 
 		matchRepository.addEvent(match);
+	}
+
+
+	private static Map<String, String> createAddress(String line1, String postcode, String line2) {
+		Map<String, String> address = new HashMap<>();
+		address.put("line1", line1);
+		address.put("postcode", postcode);
+
+		if (line2 !=  null) {
+			address.put("line2", line2);
+		}
+
+		return address;
 	}
 
 	private static ZonedDateTime resolveKickOffTime(String kickOffTime) {
