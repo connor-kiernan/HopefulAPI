@@ -12,6 +12,7 @@ import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 import uk.co.withingtonhopecf.hopefulapi.config.HopefulApiConfigurationProperties;
 import uk.co.withingtonhopecf.hopefulapi.model.Availability;
@@ -64,5 +65,14 @@ public class MatchRepository {
 
 	public void addEvent(Match match) {
 		getTable().putItem(match);
+	}
+
+	public void updateEvent(Match match) {
+		UpdateItemEnhancedRequest<Match> updateItemEnhancedRequest = UpdateItemEnhancedRequest.builder(Match.class)
+			.item(match)
+			.ignoreNulls(true)
+			.build();
+
+		getTable().updateItem(updateItemEnhancedRequest);
 	}
 }
