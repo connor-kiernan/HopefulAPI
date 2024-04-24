@@ -20,6 +20,7 @@ import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest;
 import uk.co.withingtonhopecf.hopefulapi.config.HopefulApiConfigurationProperties;
 import uk.co.withingtonhopecf.hopefulapi.model.Availability;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
@@ -43,7 +44,8 @@ class MatchRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		when(config.matchesTableName()).thenReturn("tableName");
-		when(dynamoDbEnhancedClient.table("tableName", TableSchema.fromImmutableClass(Match.class))).thenReturn(mockDynamoDbTable);
+		when(dynamoDbEnhancedClient.table("tableName", TableSchema.fromImmutableClass(Match.class))).thenReturn(
+			mockDynamoDbTable);
 	}
 
 	@Test
@@ -110,6 +112,11 @@ class MatchRepositoryTest {
 
 		matchRepository.updateEvent(match);
 
-		verify(mockDynamoDbTable, times(1)).updateItem(match);
+		UpdateItemEnhancedRequest<Match> expectedRequest = UpdateItemEnhancedRequest.builder(Match.class)
+			.item(match)
+			.ignoreNulls(true)
+			.build();
+
+		verify(mockDynamoDbTable, times(1)).updateItem(expectedRequest);
 	}
 }

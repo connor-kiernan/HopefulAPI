@@ -197,7 +197,6 @@ class MatchServiceTest {
 			.postcode("A12 3BC")
 			.isHomeGame(true)
 			.isHomeKit(true)
-			.eventType("GAME")
 			.build();
 
 		matchService.editEvent(editEventRequest);
@@ -213,7 +212,6 @@ class MatchServiceTest {
 			))
 			.isHomeGame(true)
 			.isHomeKit(true)
-			.eventType("GAME")
 			.build();
 
 		verify(matchRepository, times(1)).updateEvent(expectedMatch);

@@ -57,7 +57,6 @@ public class MatchService {
 			.pitchType(editEventRequest.pitchType())
 			.isHomeGame(editEventRequest.isHomeGame())
 			.isHomeKit(editEventRequest.isHomeKit())
-			.eventType(editEventRequest.eventType())
 			.build();
 
 		matchRepository.updateEvent(match);
