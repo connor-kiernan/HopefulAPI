@@ -52,7 +52,7 @@ public class SecurityConfig {
 	private CorsConfiguration getCorsConfiguration() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(config.frontendUrls());
-		configuration.setAllowedMethods(List.of("GET", "POST", "PATCH"));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE"));
 		configuration.setAllowCredentials(true);
 		configuration.setAllowedHeaders(List.of("*"));
 
@@ -86,6 +86,7 @@ public class SecurityConfig {
 					.requestMatchers("/matches").permitAll()
 					.requestMatchers("/addEvent").hasAuthority("Admin")
 					.requestMatchers("/editEvent").hasAuthority("Admin")
+					.requestMatchers("/deleteEvent*").hasAuthority("Admin")
 					.anyRequest().authenticated()
 			).httpBasic(Customizer.withDefaults())
 			.sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

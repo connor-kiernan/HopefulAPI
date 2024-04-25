@@ -216,4 +216,11 @@ class MatchServiceTest {
 
 		verify(matchRepository, times(1)).updateEvent(expectedMatch);
 	}
+
+	@Test
+	void deleteEventTest() {
+		matchService.deleteEvent("eventId");
+
+		verify(matchRepository, times(1)).deleteEvent("eventId");
+	}
 }

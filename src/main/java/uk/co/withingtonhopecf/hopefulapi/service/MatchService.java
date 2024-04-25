@@ -86,6 +86,10 @@ public class MatchService {
 		matchRepository.addEvent(match);
 	}
 
+	public void deleteEvent(String eventId) {
+		matchRepository.deleteEvent(eventId);
+	}
+
 	private static Map<String, String> createAddress(String line1, String postcode, String line2) {
 		Map<String, String> address = new HashMap<>();
 		address.put("line1", line1);

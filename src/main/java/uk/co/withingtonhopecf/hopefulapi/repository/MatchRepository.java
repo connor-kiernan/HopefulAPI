@@ -59,6 +59,10 @@ public class MatchRepository {
 		}
 	}
 
+	public void deleteEvent(String eventId) {
+		getTable().deleteItem(Key.builder().partitionValue(eventId).build());
+	}
+
 	private DynamoDbTable<Match> getTable() {
 		return dynamoDbEnhancedClient.table(config.matchesTableName(), TableSchema.fromImmutableClass(Match.class));
 	}
