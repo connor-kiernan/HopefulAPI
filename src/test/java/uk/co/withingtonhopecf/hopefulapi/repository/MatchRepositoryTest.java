@@ -119,4 +119,11 @@ class MatchRepositoryTest {
 
 		verify(mockDynamoDbTable, times(1)).updateItem(expectedRequest);
 	}
+
+	@Test
+	void deleteEvent() {
+		matchRepository.deleteEvent("eventId");
+
+		verify(mockDynamoDbTable, times(1)).deleteItem(Key.builder().partitionValue("eventId").build());
+	}
 }
