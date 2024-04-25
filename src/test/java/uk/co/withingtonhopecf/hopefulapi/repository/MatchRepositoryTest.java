@@ -1,7 +1,9 @@
 package uk.co.withingtonhopecf.hopefulapi.repository;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static software.amazon.awssdk.enhanced.dynamodb.internal.AttributeValues.stringValue;
 
@@ -118,5 +120,41 @@ class MatchRepositoryTest {
 			.build();
 
 		verify(mockDynamoDbTable, times(1)).updateItem(expectedRequest);
+	}
+
+	@Test
+	void deleteEvent() {
+		matchRepository.deleteEvent("eventId");
+
+		verify(mockDynamoDbTable, times(1)).deleteItem(Key.builder().partitionValue("eventId").build());
+	}
+
+	@Test
+	void completeMatch() {
+		Match matchInDb = Match.builder().id("id").eventType("GAME").build();
+		when(mockDynamoDbTable.getItem(Key.builder().partitionValue("id").build())).thenReturn(matchInDb);
+
+		Match match = Match.builder().id("id").build();
+
+		matchRepository.completeMatch(match);
+
+		UpdateItemEnhancedRequest<Match> expectedRequest = UpdateItemEnhancedRequest.builder(Match.class)
+			.item(match)
+			.ignoreNulls(true)
+			.build();
+
+		verify(mockDynamoDbTable, times(1)).updateItem(expectedRequest);
+	}
+
+	@Test
+	void completeMatchWrongType() {
+		Match matchInDb = Match.builder().id("id").eventType("TRAINING").build();
+		when(mockDynamoDbTable.getItem(Key.builder().partitionValue("id").build())).thenReturn(matchInDb);
+
+		Match match = Match.builder().id("id").build();
+
+		assertThrows(IllegalArgumentException.class, () -> matchRepository.completeMatch(match));
+
+		verifyNoMoreInteractions(mockDynamoDbTable);
 	}
 }
