@@ -16,7 +16,7 @@ import uk.co.withingtonhopecf.hopefulapi.converter.ZonedDateTimeConverter;
 import uk.co.withingtonhopecf.hopefulapi.model.enums.PitchType;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonInclude(Include.NON_NULL)
 @DynamoDbImmutable(builder = Match.MatchBuilder.class)
 public class Match {
