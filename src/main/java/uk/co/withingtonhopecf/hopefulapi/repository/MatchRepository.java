@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
@@ -78,5 +78,21 @@ public class MatchRepository {
 			.build();
 
 		getTable().updateItem(updateItemEnhancedRequest);
+	}
+
+	public void completeMatch(Match match) {
+		DynamoDbTable<Match> table = getTable();
+
+		try {
+			Match matchInDb = table.getItem(Key.builder().partitionValue(match.getId()).build());
+
+			if (!matchInDb.getEventType().equals("GAME")) {
+				throw new IllegalArgumentException("Cannot complete an event that is not a game");
+			}
+
+			updateEvent(match);
+		} catch (ResourceNotFoundException e) {
+			throw new IllegalArgumentException("Match not found");
+		}
 	}
 }

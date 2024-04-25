@@ -30,6 +30,7 @@ import uk.co.withingtonhopecf.hopefulapi.model.request.AvailabilityUpdateRequest
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
 import uk.co.withingtonhopecf.hopefulapi.model.request.AddEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.enums.AvailabilityStatus;
+import uk.co.withingtonhopecf.hopefulapi.model.request.CompleteMatchRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.request.EditEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.repository.MatchRepository;
 
@@ -222,5 +223,27 @@ class MatchServiceTest {
 		matchService.deleteEvent("eventId");
 
 		verify(matchRepository, times(1)).deleteEvent("eventId");
+	}
+
+	@Test
+	void completeMatch() {
+		CompleteMatchRequest completeMatchRequest = new CompleteMatchRequest(
+			"id",
+			2,
+			0,
+			Map.of("Kiernan", 2)
+		);
+
+		matchService.completeMatch(completeMatchRequest);
+
+		Match expectedMatch = Match.builder()
+			.id("id")
+			.homeGoals(2)
+			.awayGoals(0)
+			.withyGoalScorers(Map.of("Kiernan", 2))
+			.played(true)
+			.build();
+
+		verify(matchRepository, times(1)).completeMatch(expectedMatch);
 	}
 }
