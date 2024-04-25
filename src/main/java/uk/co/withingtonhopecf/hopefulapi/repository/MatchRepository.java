@@ -90,14 +90,7 @@ public class MatchRepository {
 				throw new IllegalArgumentException("Cannot complete an event that is not a game");
 			}
 
-			Match upsertMatch = matchInDb.toBuilder()
-				.played(true)
-				.homeGoals(match.getHomeGoals())
-				.awayGoals(match.getAwayGoals())
-				.withyGoalScorers(match.getWithyGoalScorers())
-				.build();
-
-			table.updateItem(upsertMatch);
+			updateEvent(match);
 		} catch (ResourceNotFoundException e) {
 			throw new IllegalArgumentException("Match not found");
 		}

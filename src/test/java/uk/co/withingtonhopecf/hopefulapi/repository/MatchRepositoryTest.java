@@ -134,11 +134,16 @@ class MatchRepositoryTest {
 		Match matchInDb = Match.builder().id("id").eventType("GAME").build();
 		when(mockDynamoDbTable.getItem(Key.builder().partitionValue("id").build())).thenReturn(matchInDb);
 
-		Match match = Match.builder().id("id").played(true).eventType("GAME").build();
+		Match match = Match.builder().id("id").build();
 
 		matchRepository.completeMatch(match);
 
-		verify(mockDynamoDbTable, times(1)).updateItem(match);
+		UpdateItemEnhancedRequest<Match> expectedRequest = UpdateItemEnhancedRequest.builder(Match.class)
+			.item(match)
+			.ignoreNulls(true)
+			.build();
+
+		verify(mockDynamoDbTable, times(1)).updateItem(expectedRequest);
 	}
 
 	@Test
