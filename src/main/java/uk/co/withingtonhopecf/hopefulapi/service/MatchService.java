@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import uk.co.withingtonhopecf.hopefulapi.model.request.AvailabilityUpdateRequest;
+import uk.co.withingtonhopecf.hopefulapi.model.request.CompleteMatchRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.request.EditEventRequest;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
 import uk.co.withingtonhopecf.hopefulapi.model.request.AddEventRequest;
@@ -88,6 +89,18 @@ public class MatchService {
 
 	public void deleteEvent(String eventId) {
 		matchRepository.deleteEvent(eventId);
+	}
+
+	public void completeMatch(CompleteMatchRequest completeMatchRequest) {
+		Match match = Match.builder()
+			.id(completeMatchRequest.matchId())
+			.homeGoals(completeMatchRequest.homeGoals())
+			.awayGoals(completeMatchRequest.awayGoals())
+			.played(true)
+			.withyGoalScorers(completeMatchRequest.withyGoalScorers())
+			.build();
+
+		matchRepository.completeMatch(match);
 	}
 
 	private static Map<String, String> createAddress(String line1, String postcode, String line2) {
