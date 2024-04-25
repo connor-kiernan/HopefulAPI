@@ -93,7 +93,7 @@ public class MatchService {
 
 	public void completeMatch(CompleteMatchRequest completeMatchRequest) {
 		Match match = Match.builder()
-			.id(completeMatchRequest.matchId())
+			.id(completeMatchRequest.id())
 			.homeGoals(completeMatchRequest.homeGoals())
 			.awayGoals(completeMatchRequest.awayGoals())
 			.played(true)
