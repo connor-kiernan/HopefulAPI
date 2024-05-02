@@ -1,4 +1,4 @@
-name: Hopeful API Deploy
+name: UAT - Hopeful API Deploy
 
 on:
   workflow_dispatch:
