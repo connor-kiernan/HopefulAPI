@@ -35,25 +35,25 @@ jobs:
           java-version: '21'
 
       - name: Update issuerUrl
-        run: sed -i 's#<issuerUrl>#${{ secrets.AWS_COGNITO_ISSUER_URL }}#' src/main/resources/application-production.yml
+        run: sed -i 's#<issuerUrl>#${{ secrets.AWS_COGNITO_ISSUER_URL }}#' src/main/resources/application-uat.yml
 
       - name: Update user pool ID
-        run: sed -i 's/<userPoolId>/${{ secrets.AWS_COGNITO_USER_POOL_ID }}/' src/main/resources/application-production.yml
+        run: sed -i 's/<userPoolId>/${{ secrets.AWS_COGNITO_USER_POOL_ID }}/' src/main/resources/application-uat.yml
 
       - name: Update frontend URL
-        run: sed -i 's#<frontendUrl>#"${{ secrets.UAT_FRONTEND_URL }}"#' src/main/resources/application-production.yml
+        run: sed -i 's#<frontendUrl>#"${{ secrets.UAT_FRONTEND_URL }}"#' src/main/resources/application-uat.yml
 
       - name: Update Hub URL
-        run: sed -i 's#<hubUrl>#"${{ secrets.UAT_HUB_URL }}"#' src/main/resources/application-production.yml
+        run: sed -i 's#<hubUrl>#"${{ secrets.UAT_HUB_URL }}"#' src/main/resources/application-uat.yml
 
       - name: Update Matches table name
-        run: sed -i 's#<matchesTableName>#"${{ secrets.UAT_MATCHES_TABLE_NAME }}"#' src/main/resources/application-production.yml
+        run: sed -i 's#<matchesTableName>#"${{ secrets.UAT_MATCHES_TABLE_NAME }}"#' src/main/resources/application-uat.yml
 
       - name: Update Client ID
-        run: sed -i 's#<clientId>#"${{ secrets.AWS_COGNITO_CLIENT_ID }}"#' src/main/resources/application-production.yml
+        run: sed -i 's#<clientId>#"${{ secrets.AWS_COGNITO_CLIENT_ID }}"#' src/main/resources/application-uat.yml
 
       - name: Update Token URL
-        run: sed -i 's#<tokenUrl>#"${{ secrets.AWS_COGNITO_TOKEN_URL }}"#' src/main/resources/application-production.yml
+        run: sed -i 's#<tokenUrl>#"${{ secrets.AWS_COGNITO_TOKEN_URL }}"#' src/main/resources/application-uat.yml
 
       - name: Build with Maven
         run: mvn -B package -DskipTests -f pom.xml
