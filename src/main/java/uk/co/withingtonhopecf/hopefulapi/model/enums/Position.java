@@ -25,7 +25,10 @@ public enum Position {
 	RW("Right Winger", ATTACKER),
 	SS("Second Striker", ATTACKER),
 	LW("Left Winger", ATTACKER),
-	CF("Centre Forward", ATTACKER);
+	CF("Centre Forward", ATTACKER),
+	DEF("Defender", DEFENDER),
+	MID("Midfielder", MIDFIELDER),
+	ATT("Forward", ATTACKER);
 
 	private final String qualifiedPosition;
 	private final PositionGroup positionGroup;

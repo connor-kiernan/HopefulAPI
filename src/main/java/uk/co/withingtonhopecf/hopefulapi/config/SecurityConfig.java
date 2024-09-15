@@ -34,7 +34,6 @@ public class SecurityConfig {
 
 	private final HopefulApiConfigurationProperties config;
 
-
 	@Profile("!dev & !docker")
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
