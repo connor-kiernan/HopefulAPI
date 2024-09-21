@@ -47,7 +47,7 @@ public class AuthController {
 		return createAuthResponse(accessTokenFromRefreshToken);
 	}
 
-	@PostMapping("logout")
+	@PostMapping("/logout")
 	public void logout(HttpServletResponse response) {
 		final Cookie cookie = new Cookie("refresh", null);
 		cookie.setSecure(true);

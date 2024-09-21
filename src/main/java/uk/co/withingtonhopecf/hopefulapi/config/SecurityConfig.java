@@ -1,5 +1,7 @@
 package uk.co.withingtonhopecf.hopefulapi.config;
 
+import static java.util.Collections.emptyList;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletResponse;
@@ -31,7 +33,6 @@ import org.springframework.web.cors.CorsConfiguration;
 public class SecurityConfig {
 
 	private final HopefulApiConfigurationProperties config;
-
 
 	@Profile("!dev & !docker")
 	@Bean
@@ -69,7 +70,11 @@ public class SecurityConfig {
 		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
 			List<String> cognitoGroups = jwt.getClaimAsStringList("cognito:groups");
 
-			return cognitoGroups.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toCollection(ArrayList::new));
+			if (cognitoGroups != null) {
+				return cognitoGroups.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toCollection(ArrayList::new));
+			}
+
+			return emptyList();
 		});
 
 		jwtAuthenticationConverter.setPrincipalClaimName("sub");
