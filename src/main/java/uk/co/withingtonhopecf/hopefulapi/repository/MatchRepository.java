@@ -3,27 +3,27 @@ package uk.co.withingtonhopecf.hopefulapi.repository;
 import static software.amazon.awssdk.enhanced.dynamodb.internal.AttributeValues.stringValue;
 
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 import uk.co.withingtonhopecf.hopefulapi.config.HopefulApiConfigurationProperties;
+import uk.co.withingtonhopecf.hopefulapi.factory.DynamoTableFactory;
 import uk.co.withingtonhopecf.hopefulapi.model.Availability;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
 
 @Repository
-@RequiredArgsConstructor
 public class MatchRepository {
 
-	private final HopefulApiConfigurationProperties config;
-	private final DynamoDbEnhancedClient dynamoDbEnhancedClient;
+	private final DynamoDbTable<Match> table;
+
+	public MatchRepository(HopefulApiConfigurationProperties config, DynamoTableFactory dynamoTableFactory) {
+		this.table = dynamoTableFactory.getTable(config.matchesTableName(), Match.class);
+	}
 
 	public PageIterable<Match> publicListWithAttributes(List<String> attributes) {
 		ScanEnhancedRequest request = ScanEnhancedRequest.builder()
@@ -34,7 +34,7 @@ public class MatchRepository {
 				.build())
 			.build();
 
-		return getTable().scan(request);
+		return table.scan(request);
 	}
 
 	public PageIterable<Match> listWithAttributes(List<String> attributes) {
@@ -42,12 +42,10 @@ public class MatchRepository {
 			.attributesToProject(attributes)
 			.build();
 
-		return getTable().scan(request);
+		return table.scan(request);
 	}
 
 	public void upsertAvailability(String matchId, String userSub, Availability availability) {
-		DynamoDbTable<Match> table = getTable();
-
 		try {
 			Match match = table.getItem(Key.builder().partitionValue(matchId).build());
 
@@ -60,15 +58,11 @@ public class MatchRepository {
 	}
 
 	public void deleteEvent(String eventId) {
-		getTable().deleteItem(Key.builder().partitionValue(eventId).build());
-	}
-
-	private DynamoDbTable<Match> getTable() {
-		return dynamoDbEnhancedClient.table(config.matchesTableName(), TableSchema.fromImmutableClass(Match.class));
+		table.deleteItem(Key.builder().partitionValue(eventId).build());
 	}
 
 	public void addEvent(Match match) {
-		getTable().putItem(match);
+		table.putItem(match);
 	}
 
 	public void updateEvent(Match match) {
@@ -77,12 +71,10 @@ public class MatchRepository {
 			.ignoreNulls(true)
 			.build();
 
-		getTable().updateItem(updateItemEnhancedRequest);
+		table.updateItem(updateItemEnhancedRequest);
 	}
 
 	public void completeMatch(Match match) {
-		DynamoDbTable<Match> table = getTable();
-
 		try {
 			Match matchInDb = table.getItem(Key.builder().partitionValue(match.getId()).build());
 
