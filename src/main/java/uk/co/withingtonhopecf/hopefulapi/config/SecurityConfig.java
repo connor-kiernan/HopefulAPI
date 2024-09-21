@@ -1,6 +1,7 @@
 package uk.co.withingtonhopecf.hopefulapi.config;
 
 import static java.util.Collections.emptyList;
+import static org.springframework.http.HttpMethod.GET;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,6 +45,7 @@ public class SecurityConfig {
 					.requestMatchers("/auth/*").permitAll()
 					.requestMatchers("/players").permitAll()
 					.requestMatchers("/matches").permitAll()
+					.requestMatchers(GET, "/config/*").permitAll()
 					.requestMatchers("/addEvent").hasAuthority("Admin")
 					.requestMatchers("/editEvent").hasAuthority("Admin")
 					.requestMatchers("/deleteEvent*").hasAuthority("Admin")
@@ -93,6 +95,7 @@ public class SecurityConfig {
 					.requestMatchers("/auth/*").permitAll()
 					.requestMatchers("/players").permitAll()
 					.requestMatchers("/matches").permitAll()
+					.requestMatchers(GET, "/config/*").permitAll()
 					.requestMatchers("/addEvent").hasAuthority("Admin")
 					.requestMatchers("/editEvent").hasAuthority("Admin")
 					.requestMatchers("/deleteEvent*").hasAuthority("Admin")

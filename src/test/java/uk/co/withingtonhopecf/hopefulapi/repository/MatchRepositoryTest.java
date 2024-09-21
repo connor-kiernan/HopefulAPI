@@ -13,17 +13,15 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest;
 import uk.co.withingtonhopecf.hopefulapi.config.HopefulApiConfigurationProperties;
+import uk.co.withingtonhopecf.hopefulapi.factory.DynamoTableFactory;
 import uk.co.withingtonhopecf.hopefulapi.model.Availability;
 import uk.co.withingtonhopecf.hopefulapi.model.Match;
 import uk.co.withingtonhopecf.hopefulapi.model.enums.AvailabilityStatus;
@@ -35,9 +33,8 @@ class MatchRepositoryTest {
 	private HopefulApiConfigurationProperties config;
 
 	@Mock
-	private DynamoDbEnhancedClient dynamoDbEnhancedClient;
+	private DynamoTableFactory dynamoTableFactory;
 
-	@InjectMocks
 	private MatchRepository matchRepository;
 
 	@Mock
@@ -46,8 +43,9 @@ class MatchRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		when(config.matchesTableName()).thenReturn("tableName");
-		when(dynamoDbEnhancedClient.table("tableName", TableSchema.fromImmutableClass(Match.class))).thenReturn(
-			mockDynamoDbTable);
+		when(dynamoTableFactory.getTable("tableName", Match.class)).thenReturn(mockDynamoDbTable);
+
+		matchRepository = new MatchRepository(config, dynamoTableFactory);
 	}
 
 	@Test
