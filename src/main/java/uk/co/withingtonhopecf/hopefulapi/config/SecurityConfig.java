@@ -45,7 +45,7 @@ public class SecurityConfig {
 					.requestMatchers("/auth/*").permitAll()
 					.requestMatchers("/players").permitAll()
 					.requestMatchers("/matches").permitAll()
-					.requestMatchers(GET, "/config/*").permitAll()
+					.requestMatchers(GET, "/config").permitAll()
 					.requestMatchers("/addEvent").hasAuthority("Admin")
 					.requestMatchers("/editEvent").hasAuthority("Admin")
 					.requestMatchers("/deleteEvent*").hasAuthority("Admin")
