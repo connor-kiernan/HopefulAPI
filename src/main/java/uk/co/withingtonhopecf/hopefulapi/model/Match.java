@@ -45,4 +45,6 @@ public class Match {
 
 	String eventType;
 
+	String season;
+
 }
