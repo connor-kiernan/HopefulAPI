@@ -50,7 +50,7 @@ class MatchServiceTest {
 	void getMatchesPublic() {
 		when(matchRepository.publicListWithAttributes(
 			List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "homeGoals", "awayGoals",
-				"withyGoalScorers")))
+				"withyGoalScorers", "season")))
 			.thenReturn(mockPageIterable);
 
 		Match match = Match.builder()
@@ -143,6 +143,7 @@ class MatchServiceTest {
 			.isHomeKit(true)
 			.eventType(eventType)
 			.playerAvailability(emptyMap())
+			.season("2023/24")
 			.build();
 
 		verify(matchRepository, times(1)).addEvent(expectedMatch);
@@ -182,6 +183,7 @@ class MatchServiceTest {
 			.isHomeKit(true)
 			.eventType("GAME")
 			.playerAvailability(emptyMap())
+			.season("2023/24")
 			.build();
 
 		verify(matchRepository, times(1)).addEvent(expectedMatch);
@@ -213,6 +215,7 @@ class MatchServiceTest {
 			))
 			.isHomeGame(true)
 			.isHomeKit(true)
+			.season("2023/24")
 			.build();
 
 		verify(matchRepository, times(1)).updateEvent(expectedMatch);
