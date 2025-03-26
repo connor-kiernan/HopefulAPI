@@ -59,7 +59,7 @@ jobs:
         run: mvn -B package -DskipTests -f pom.xml
 
       - name: Upload Maven Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: HopefulAPI_Artifacts
           path: target/HopefulAPI-0-SNAPSHOT.jar
