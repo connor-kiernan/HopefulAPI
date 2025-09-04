@@ -14,5 +14,6 @@ public record AddEventRequest(
 	@NotBlank String postcode,
 	Boolean isHomeGame,
 	Boolean isHomeKit,
-	@NotBlank String eventType
+	@NotBlank String eventType,
+	String competition
 ) {}

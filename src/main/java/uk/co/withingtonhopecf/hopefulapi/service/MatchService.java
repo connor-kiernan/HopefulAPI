@@ -27,8 +27,8 @@ public class MatchService {
 
 	private final MatchRepository matchRepository;
 
-	private static final List<String> PUBLIC_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "homeGoals", "awayGoals", "withyGoalScorers", "season");
-	private static final List<String> AVAILABILITY_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "isHomeKit", "pitchType", "eventType", "playerAvailability");
+	private static final List<String> PUBLIC_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "homeGoals", "awayGoals", "withyGoalScorers", "season", "competition");
+	private static final List<String> AVAILABILITY_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "isHomeKit", "pitchType", "eventType", "playerAvailability", "competition");
 
 	public List<Match> getMatchesPublic() {
 		return flatMapPages(matchRepository.publicListWithAttributes(PUBLIC_ATTRIBUTES));
@@ -61,6 +61,7 @@ public class MatchService {
 			.isHomeGame(editEventRequest.isHomeGame())
 			.isHomeKit(editEventRequest.isHomeKit())
 			.season(resolveSeason(kickOffDateTime))
+			.competition(editEventRequest.competition())
 			.build();
 
 		matchRepository.updateEvent(match);
@@ -87,6 +88,7 @@ public class MatchService {
 			.playerAvailability(emptyMap())
 			.eventType(addEventRequest.eventType())
 			.season(resolveSeason(kickOffDateTime))
+			.competition(addEventRequest.competition())
 			.build();
 
 		matchRepository.addEvent(match);

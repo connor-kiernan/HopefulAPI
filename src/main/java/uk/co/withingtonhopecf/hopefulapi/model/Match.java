@@ -47,4 +47,6 @@ public class Match {
 
 	String season;
 
+	String competition;
+
 }
