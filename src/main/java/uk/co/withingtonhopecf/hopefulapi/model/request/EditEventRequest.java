@@ -14,5 +14,6 @@ public record EditEventRequest(
 	String address2,
 	@NotBlank String postcode,
 	Boolean isHomeGame,
-	Boolean isHomeKit
+	Boolean isHomeKit,
+	String competition
 ) {}

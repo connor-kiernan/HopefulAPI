@@ -3,6 +3,7 @@ package uk.co.withingtonhopecf.hopefulapi.service;
 import static java.util.Collections.emptyMap;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -26,8 +27,8 @@ public class MatchService {
 
 	private final MatchRepository matchRepository;
 
-	private static final List<String> PUBLIC_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "homeGoals", "awayGoals", "withyGoalScorers");
-	private static final List<String> AVAILABILITY_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "isHomeKit", "pitchType", "eventType", "playerAvailability");
+	private static final List<String> PUBLIC_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "homeGoals", "awayGoals", "withyGoalScorers", "season", "competition");
+	private static final List<String> AVAILABILITY_ATTRIBUTES = List.of("id", "kickOffDateTime", "opponent", "address", "played", "isHomeGame", "isHomeKit", "pitchType", "eventType", "playerAvailability", "competition");
 
 	public List<Match> getMatchesPublic() {
 		return flatMapPages(matchRepository.publicListWithAttributes(PUBLIC_ATTRIBUTES));
@@ -50,14 +51,17 @@ public class MatchService {
 	public void editEvent(EditEventRequest editEventRequest) {
 		Map<String, String> address = createAddress(editEventRequest.address1(), editEventRequest.postcode(), editEventRequest.address2());
 
+		final ZonedDateTime kickOffDateTime = resolveKickOffTime(editEventRequest.kickOffDateTime());
 		Match match = Match.builder()
 			.id(editEventRequest.id())
 			.opponent(editEventRequest.opponent())
 			.address(address)
-			.kickOffDateTime(resolveKickOffTime(editEventRequest.kickOffDateTime()))
+			.kickOffDateTime(kickOffDateTime)
 			.pitchType(editEventRequest.pitchType())
 			.isHomeGame(editEventRequest.isHomeGame())
 			.isHomeKit(editEventRequest.isHomeKit())
+			.season(resolveSeason(kickOffDateTime))
+			.competition(editEventRequest.competition())
 			.build();
 
 		matchRepository.updateEvent(match);
@@ -72,16 +76,19 @@ public class MatchService {
 
 		Map<String, String> address = createAddress(addEventRequest.address1(), addEventRequest.postcode(), addEventRequest.address2());
 
+		final ZonedDateTime kickOffDateTime = resolveKickOffTime(addEventRequest.kickOffDateTime());
 		Match match = Match.builder()
 			.id(idPrefix + Instant.now().getEpochSecond())
 			.opponent(addEventRequest.opponent())
 			.address(address)
-			.kickOffDateTime(resolveKickOffTime(addEventRequest.kickOffDateTime()))
+			.kickOffDateTime(kickOffDateTime)
 			.pitchType(addEventRequest.pitchType())
 			.isHomeGame(addEventRequest.isHomeGame())
 			.isHomeKit(addEventRequest.isHomeKit())
 			.playerAvailability(emptyMap())
 			.eventType(addEventRequest.eventType())
+			.season(resolveSeason(kickOffDateTime))
+			.competition(addEventRequest.competition())
 			.build();
 
 		matchRepository.addEvent(match);
@@ -119,5 +126,16 @@ public class MatchService {
 		LocalDateTime localDateTime = LocalDateTime.parse(kickOffTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
 
 		return ZonedDateTime.of(localDateTime, ZoneId.of("Europe/London"));
+	}
+
+	private static String resolveSeason(ZonedDateTime kickOffDateTime) {
+		int year = kickOffDateTime.getYear();
+		final LocalDate seasonBorder = LocalDate.of(year, 7, 1);
+
+		if (kickOffDateTime.isBefore(seasonBorder.atStartOfDay(ZoneId.of("Europe/London")))) {
+			return "%d/%d".formatted(year - 1, year % 100);
+		}
+
+		return "%d/%d".formatted(year, (year + 1) % 100);
 	}
 }
