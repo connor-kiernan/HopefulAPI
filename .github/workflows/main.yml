@@ -56,7 +56,9 @@ jobs:
         run: sed -i 's#<tokenUrl>#"${{ secrets.AWS_COGNITO_TOKEN_URL }}"#' src/main/resources/application-production.yml
 
       - name: Build with Maven
-        run: mvn -B package -DskipTests -f pom.xml
+        run: |
+          mvn -B versions:set -DnewVersion=${{github.run_id}}
+          mvn -B package -DskipTests -f pom.xml
 
       - name: Upload Maven Artifact
         uses: actions/upload-artifact@v4.3.3
