@@ -42,6 +42,7 @@ public class SecurityConfig {
 			.cors(corsConfigurer -> corsConfigurer.configurationSource(request -> getCorsConfiguration()))
 			.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
 				authorizationManagerRequestMatcherRegistry
+					.requestMatchers("/actuator/**").permitAll()
 					.requestMatchers("/auth/*").permitAll()
 					.requestMatchers("/players").permitAll()
 					.requestMatchers("/matches").permitAll()
@@ -92,6 +93,7 @@ public class SecurityConfig {
 			.addFilterBefore((request, response, filterChain) -> filter((HttpServletRequest) request, response, filterChain), BasicAuthenticationFilter.class)
 			.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
 				authorizationManagerRequestMatcherRegistry
+					.requestMatchers("/actuator/**").permitAll()
 					.requestMatchers("/auth/*").permitAll()
 					.requestMatchers("/players").permitAll()
 					.requestMatchers("/matches").permitAll()
