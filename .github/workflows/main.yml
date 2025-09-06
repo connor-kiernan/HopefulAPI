@@ -23,7 +23,7 @@ jobs:
       - name: Run Maven Test
         run: mvn clean test
 
-  build:
+  Build:
     needs: Test
     runs-on: ubuntu-latest
     steps:
@@ -59,31 +59,25 @@ jobs:
         run: mvn -B package -DskipTests -f pom.xml
 
       - name: Upload Maven Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: HopefulAPI_Artifacts
-          path: target/HopefulAPI-0-SNAPSHOT.jar
+          path: target/HopefulAPI-${{github.run_id}}.jar
 
-  deploy:
-    needs: build
+  Deploy:
+    needs: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4.1.7
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          name: HopefulAPI_Artifacts
-
-      - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v21
-        with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: ${{ secrets.AWS_EB_APP_NAME }}
-          environment_name: ${{ secrets.AWS_EB_ENV_NAME }}
-          version_label: ${{github.run_number}}
-          region: ${{env.AWS_REGION}}
-          deployment_package: HopefulAPI-0-SNAPSHOT.jar
-
-          
+          aws-region: ${{env.AWS_REGION}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Deploy
+        run: |
+          aws s3 cp "target/HopefulAPI-${{github.run_id}}.jar" s3://elasticbeanstalk-eu-west-1-${{ secrets.AWS_ACCOUNT_ID }}/artifact/HopefulAPI/
+          aws elasticbeanstalk create-application-version --application-name ${{ secrets.AWS_EB_APP_NAME }} --version-label ${{github.run_id}} --description ${{github.run_id}} --source-bundle S3Bucket="elasticbeanstalk-eu-west-1-${{ secrets.AWS_ACCOUNT_ID }}}",S3Key="artifact/artifact/HopefulAPI/HopefulAPI-${{github.run_id}}.jar"
+          aws elasticbeanstalk update-environment --application-name ${{ secrets.AWS_EB_APP_NAME }} --environment-name ${{ secrets.AWS_EB_ENV_NAME }} --version-label ${{github.run_id}}
+          aws elasticbeanstalk wait environment-updated --application-name ${{ secrets.AWS_EB_APP_NAME }} --environment-name ${{ secrets.AWS_EB_ENV_NAME }}
