@@ -83,6 +83,6 @@ jobs:
       - name: Deploy
         run: |
           aws s3 cp "target/HopefulAPI-${{github.run_id}}.jar" s3://elasticbeanstalk-eu-west-1-${{ secrets.AWS_ACCOUNT_ID }}/artifact/HopefulAPI/
-          aws elasticbeanstalk create-application-version --application-name ${{ secrets.AWS_EB_APP_NAME }} --version-label ${{github.run_id}} --description ${{github.run_id}} --source-bundle S3Bucket="elasticbeanstalk-eu-west-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="artifact/artifact/HopefulAPI/HopefulAPI-${{github.run_id}}.jar"
+          aws elasticbeanstalk create-application-version --application-name ${{ secrets.AWS_EB_APP_NAME }} --version-label ${{github.run_id}} --description ${{github.run_id}} --source-bundle S3Bucket="elasticbeanstalk-eu-west-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="artifact/HopefulAPI/HopefulAPI-${{github.run_id}}.jar"
           aws elasticbeanstalk update-environment --application-name ${{ secrets.AWS_EB_APP_NAME }} --environment-name ${{ secrets.AWS_EB_ENV_NAME }} --version-label ${{github.run_id}}
           aws elasticbeanstalk wait environment-updated --application-name ${{ secrets.AWS_EB_APP_NAME }} --environment-name ${{ secrets.AWS_EB_ENV_NAME }}
